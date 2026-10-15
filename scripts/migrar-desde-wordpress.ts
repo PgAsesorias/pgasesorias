@@ -120,6 +120,21 @@ export function normCombustible(v?: string): VehiculoMigrado["combustible"] {
   return null;
 }
 
+/**
+ * Normaliza un slug de equipamiento/seguridad: minúsculas, sin tildes y con
+ * guiones. En WordPress vienen inconsistentes ("Llantas-aleación",
+ * "anclaje-ISOFIX"), y si no calzan con opciones_equipamiento la ficha
+ * terminaría mostrando el slug crudo al cliente.
+ */
+export function normSlug(v: string): string {
+  return v
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export function normTraccion(v?: string): VehiculoMigrado["traccion"] {
   if (!v) return null;
   const s = v.toLowerCase().replace(/\s|×/g, "x");
@@ -212,8 +227,8 @@ export function mapear(wp: WpVehiculo, avisos: string[]): VehiculoMigrado {
     ubicacion: meta(m, "ubicacion") ?? "Santiago, Chile",
     precio,
     precio_oferta,
-    equipamiento: phpArray(meta(m, "equipamiento")),
-    seguridad: phpArray(meta(m, "seguridad")),
+    equipamiento: phpArray(meta(m, "equipamiento")).map(normSlug),
+    seguridad: phpArray(meta(m, "seguridad")).map(normSlug),
     estado: wp.status === "publish" ? "publicado" : "borrador",
     publicado_at: wp.date_gmt ? `${wp.date_gmt}Z` : new Date().toISOString(),
     fotos,

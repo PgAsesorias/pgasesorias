@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { servicios } from "@/lib/site";
 import { Tarjeta } from "@/components/ui/Tarjeta";
-import { IconoAuto, IconoCheck } from "@/components/ui/Iconos";
+import { IconoAuto, IconoLlave, IconoLupa } from "@/components/ui/Iconos";
 
 /** Los 8 servicios con los textos del sitio actual. */
 export function Servicios({ limite }: { limite?: number }) {
@@ -15,7 +15,9 @@ export function Servicios({ limite }: { limite?: number }) {
             {s.icono ? (
               <Image src={s.icono} alt="" aria-hidden width={34} height={34} className="h-8 w-8" />
             ) : s.slug === "inspeccion-pre-compra" ? (
-              <IconoCheck width={30} height={30} />
+              <IconoLupa width={30} height={30} />
+            ) : s.slug === "mecanica-general" ? (
+              <IconoLlave width={30} height={30} />
             ) : (
               <IconoAuto width={30} height={30} />
             )}

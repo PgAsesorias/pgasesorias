@@ -17,8 +17,20 @@ export function Contadores() {
     const nodo = contenedor.current;
     if (!nodo) return;
 
+    // Si la sección ya está a la vista al cargar, no se anima: se deja el
+    // número final (que ya viene renderizado desde el servidor).
+    let primeraMedicion = true;
+
     const observador = new IntersectionObserver(
       ([entrada]) => {
+        if (primeraMedicion) {
+          primeraMedicion = false;
+          if (entrada.isIntersecting) {
+            observador.disconnect();
+            return;
+          }
+          return;
+        }
         if (entrada.isIntersecting) {
           setVisible(true);
           observador.disconnect();
@@ -49,7 +61,8 @@ export function Contadores() {
 }
 
 function Conteo({ hasta, activo }: { hasta: number; activo: boolean }) {
-  const [valor, setValor] = useState(0);
+  // Sin JavaScript, o antes de animar, se muestra el número final: nunca un 0.
+  const [valor, setValor] = useState<number | null>(null);
 
   useEffect(() => {
     if (!activo) return;
@@ -72,5 +85,5 @@ function Conteo({ hasta, activo }: { hasta: number; activo: boolean }) {
     return () => cancelAnimationFrame(frame);
   }, [activo, hasta]);
 
-  return <>{numero(valor)}</>;
+  return <>{numero(valor ?? hasta)}</>;
 }

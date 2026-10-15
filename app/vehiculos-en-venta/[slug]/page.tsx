@@ -22,6 +22,7 @@ import {
   obtenerVehiculoPorSlug,
   urlFoto,
 } from "@/lib/vehiculos";
+import { etiquetaOpcion } from "@/lib/equipamiento";
 import { sitio, whatsappUrl } from "@/lib/site";
 
 export const revalidate = 300;
@@ -86,8 +87,7 @@ export default async function FichaVehiculo({ params }: Props) {
     obtenerVecinos(vehiculo),
   ]);
 
-  const etiqueta = (slugOpcion: string) =>
-    opciones.find((o) => o.slug === slugOpcion)?.label ?? slugOpcion;
+  const etiqueta = (slugOpcion: string) => etiquetaOpcion(slugOpcion, opciones);
 
   const fotos: FotoGaleria[] = vehiculo.fotos.map((f, i) => ({
     url: urlFoto(f.storage_path),

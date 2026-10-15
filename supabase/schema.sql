@@ -49,7 +49,7 @@ insert into public.opciones_equipamiento (slug, label, tipo, orden) values
   ('llantas-aleacion',          'Llantas de Aleación',         'equipamiento', 3),
   ('neblineros',                'Neblineros',                  'equipamiento', 4),
   ('sensor-retroceso',          'Sensor de Retroceso',         'equipamiento', 5),
-  ('camera-retroceso',          'Cámara de Retroceso',         'equipamiento', 6),
+  ('camara-retroceso',          'Cámara de Retroceso',         'equipamiento', 6),
   ('bluetooth',                 'Bluetooth',                   'equipamiento', 7),
   ('android-auto',              'Android Auto',                'equipamiento', 8),
   ('apple-carplay',             'Apple CarPlay',               'equipamiento', 9),

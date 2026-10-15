@@ -11,7 +11,8 @@
     "verificar:supabase": "node --env-file=.env.local scripts/verificar-supabase.ts",
     "tipos:supabase": "supabase gen types typescript --project-id noozrbmmukctabusnwdy --schema public",
     "auditar": "node --env-file=.env.local scripts/auditar-vehiculos.ts",
-    "migrar": "node --env-file=.env.local scripts/migrar-desde-wordpress.ts"
+    "migrar": "node --env-file=.env.local scripts/migrar-desde-wordpress.ts",
+    "capturas": "node scripts/capturas.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -28,6 +29,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.1",
+    "playwright": "^1.64.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
