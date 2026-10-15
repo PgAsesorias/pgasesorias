@@ -119,3 +119,48 @@ tiene reglas explícitas y comprobadas.
   de los vehículos ya publicados no se rompen.
 - `npm run verificar:supabase` revisa en 5 segundos que la base, las semillas, los
   buckets y los administradores estén bien. Si algo falta, dice exactamente qué.
+
+---
+
+## Fase 3 — Migración de los vehículos actuales
+
+Se migraron los **7 vehículos** del WordPress con sus **72 fotos**, convertidas a
+WebP (máx. 1920px) y alojadas en el Storage propio. Hoy las fotos se sirven desde
+el servidor de WordPress en tamaño original; ahora pesan una fracción y las entrega
+un CDN.
+
+### Errores de datos encontrados y corregidos
+
+El sitio actual publica autos cuyo título contradice su ficha. Se revisó cada caso
+**mirando las fotos del propio auto**, no adivinando:
+
+| Vehículo | Problema en el sitio actual | Qué se hizo |
+|---|---|---|
+| Maxus T60 | El título dice "Diésel … Mecánico", los campos decían Gasolina y Automática | Las fotos muestran la palanca con el patrón de marchas grabado, y el motor 2.8 de esa versión es diésel → se corrigieron los campos a **Mecánico + Diésel** |
+| Peugeot Landtrek | El título dice "Automático", el campo decía Manual | Las fotos muestran palanca manual y selector 4×4 (H2/H4) → el campo tenía razón; se corrigió **el título** a "Mecánico" |
+| 6 de 7 vehículos | El campo de tracción estaba vacío aunque el título la indicaba | Se completó la tracción (4×2 / 4×4) leyéndola del título |
+
+La URL de cada vehículo (su slug) se mantuvo **exactamente igual** que en WordPress,
+así que los enlaces compartidos por WhatsApp y lo que Google ya tiene indexado
+siguen funcionando.
+
+### Validador de coherencia (upgrade v1 nº 2)
+
+`lib/coherencia.ts` revisa cada vehículo y distingue entre **errores** (impiden
+publicar) y **avisos** (solo advierten):
+
+- El título contra los campos: transmisión, combustible, tracción, puertas y año.
+- Año fuera de rango (el "1970" que muestra hoy la tarjeta del Peugeot sería error)
+  o del modelo siguiente (aviso para confirmar).
+- Precio de oferta mayor o igual al precio, o sospechosamente bajo (falta un dígito).
+- Kilometraje imposible para la antigüedad del vehículo.
+- Vehículos sin fotos o con menos de 5.
+
+Tiene 8 tests automáticos, incluido uno que reproduce el bug real del Maxus T60.
+Se usa en el panel de administración (fase 5) y desde la línea de comandos:
+
+```bash
+npm run auditar
+```
+
+**Resultado actual del inventario: 7 vehículos, 0 errores, 2 avisos.**
