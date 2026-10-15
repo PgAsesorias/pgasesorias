@@ -1,0 +1,157 @@
+@import "tailwindcss";
+
+/* ───────────────────────────────────────────────────────────────
+   Tokens de marca PG Asesorías
+   Extraídos del CSS real de pgasesorias.cl (tema Astra).
+   ─────────────────────────────────────────────────────────────── */
+:root {
+  /* Marca */
+  --pg-orange: #ff9d43;
+  --pg-red: #d33e52;
+  --pg-red-dark: #b80000;
+  --pg-red-shadow: #e84b4b;
+  --pg-gradient: linear-gradient(90deg, #ff9d43 0%, #d33e52 100%);
+
+  /* Neutros */
+  --pg-ink: #272e32;
+  --pg-black: #000000;
+  --pg-white: #ffffff;
+  --pg-gray: #333333;
+  --pg-check: #4caf50;
+
+  /* Superficies (ast-global-color-4/7/8 del sitio real) */
+  --pg-bg: #f9f9fb;        /* fondo general del sitio */
+  --pg-border: #d3d3d3;    /* bordes y separadores suaves */
+  --pg-muted: #6e6e6e;     /* texto secundario */
+  --pg-header: #000000;    /* fondo del header */
+  --pg-footer: #000000;    /* fondo del footer */
+  --pg-yellow: #ffdd00;    /* estrellas de la reseña de Google */
+
+  /* Forma */
+  --pg-radius-pill: 40px;
+  --pg-radius-card: 20px;
+  --pg-shadow-card: 0 18px 40px -10px rgba(0, 0, 0, 0.44);
+  --pg-shadow-btn: 0 2px 5px -1px #e84b4b;
+
+  /* Layout */
+  --pg-header-alto: 70px;
+  --pg-header-alto-compacto: 58px;
+}
+
+@theme inline {
+  --color-pg-orange: var(--pg-orange);
+  --color-pg-red: var(--pg-red);
+  --color-pg-red-dark: var(--pg-red-dark);
+  --color-pg-ink: var(--pg-ink);
+  --color-pg-black: var(--pg-black);
+  --color-pg-white: var(--pg-white);
+  --color-pg-gray: var(--pg-gray);
+  --color-pg-check: var(--pg-check);
+  --color-pg-bg: var(--pg-bg);
+  --color-pg-border: var(--pg-border);
+  --color-pg-muted: var(--pg-muted);
+  --color-pg-yellow: var(--pg-yellow);
+
+  --font-titulo: var(--font-anek-bangla), ui-sans-serif, system-ui, sans-serif;
+  --font-texto: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-pill: var(--pg-radius-pill);
+  --radius-card: var(--pg-radius-card);
+
+  --shadow-pg-card: var(--pg-shadow-card);
+  --shadow-pg-btn: var(--pg-shadow-btn);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* compensa el header fijo al saltar a un ancla */
+    scroll-padding-top: calc(var(--pg-header-alto) + 16px);
+  }
+
+  body {
+    background-color: var(--pg-bg);
+    color: var(--pg-ink);
+    font-family: var(--font-texto);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-titulo);
+    line-height: 1.2;
+    font-weight: 700;
+    text-wrap: balance;
+  }
+
+  /* Foco visible en todo el sitio (accesibilidad) */
+  :focus-visible {
+    outline: 3px solid var(--pg-orange);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--pg-orange);
+    color: var(--pg-white);
+  }
+}
+
+@layer components {
+  /* Contenido al 80% del ancho con máximo 1400px (patrón del sitio) */
+  .pg-contenedor {
+    width: 90%;
+    max-width: 1400px;
+    margin-inline: auto;
+  }
+
+  @media (min-width: 1024px) {
+    .pg-contenedor {
+      width: 80%;
+    }
+  }
+
+  /* Padding vertical de sección: ~100px en desktop */
+  .pg-seccion {
+    padding-block: 64px;
+  }
+
+  @media (min-width: 1024px) {
+    .pg-seccion {
+      padding-block: 100px;
+    }
+  }
+
+  .pg-degradado {
+    background-image: var(--pg-gradient);
+  }
+
+  /* Texto con el degradado de marca */
+  .pg-texto-degradado {
+    background-image: var(--pg-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+/* Respeta a quien pide menos animación */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
