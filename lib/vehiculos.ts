@@ -1,6 +1,6 @@
 import "server-only";
 
-import { crearClienteServidor } from "@/lib/supabase/server";
+import { crearClientePublico } from "@/lib/supabase/publico";
 import { supabaseUrl } from "@/lib/env";
 import type {
   Combustible,
@@ -94,7 +94,7 @@ export async function listarVehiculos(
     porPagina = 12,
   } = filtros;
 
-  const supabase = await crearClienteServidor();
+  const supabase = crearClientePublico();
 
   let consulta = supabase
     .from("vehiculos")
@@ -157,7 +157,7 @@ export async function listarVehiculos(
 
 /** Un vehículo por su slug, con las fotos ordenadas. Null si no existe. */
 export async function obtenerVehiculoPorSlug(slug: string): Promise<VehiculoConFotos | null> {
-  const supabase = await crearClienteServidor();
+  const supabase = crearClientePublico();
 
   const { data, error } = await supabase
     .from("vehiculos")
@@ -178,7 +178,7 @@ export async function obtenerVehiculoPorSlug(slug: string): Promise<VehiculoConF
 export async function listarSlugsPublicados(): Promise<
   Array<{ slug: string; updated_at: string }>
 > {
-  const supabase = await crearClienteServidor();
+  const supabase = crearClientePublico();
 
   const { data, error } = await supabase
     .from("vehiculos")
@@ -197,7 +197,7 @@ export async function listarSlugsPublicados(): Promise<
 export async function obtenerVecinos(
   vehiculo: Pick<Vehiculo, "id" | "publicado_at" | "created_at">,
 ): Promise<{ anterior: Vehiculo | null; siguiente: Vehiculo | null }> {
-  const supabase = await crearClienteServidor();
+  const supabase = crearClientePublico();
   const referencia = vehiculo.publicado_at ?? vehiculo.created_at;
 
   const [{ data: siguiente }, { data: anterior }] = await Promise.all([
@@ -235,7 +235,7 @@ export async function obtenerRelacionados(
   vehiculo: Pick<Vehiculo, "id" | "precio" | "precio_oferta" | "carroceria">,
   limite = 3,
 ): Promise<VehiculoConFotos[]> {
-  const supabase = await crearClienteServidor();
+  const supabase = crearClientePublico();
   const precio = precioVigente(vehiculo);
 
   const { data, error } = await supabase
@@ -273,51 +273,67 @@ export async function obtenerRelacionados(
   return cercanos.slice(0, limite);
 }
 
-/** Marcas con su conteo, para el filtro del catálogo. */
-export async function contarPorMarca(): Promise<Array<{ marca: string; total: number }>> {
-  const supabase = await crearClienteServidor();
+/** Conteos para los filtros del catálogo, calculados sobre lo visible. */
+export type Facetas = {
+  marcas: Array<{ marca: string; total: number }>;
+  anios: Array<{ anio: number; total: number }>;
+  condiciones: Array<{ condicion: string; total: number }>;
+  transmisiones: Array<{ transmision: string; total: number }>;
+  combustibles: Array<{ combustible: string; total: number }>;
+};
+
+/**
+ * Trae de una sola consulta los conteos de cada filtro, como los muestra
+ * hoy el sitio ("Toyota (3)"), pero para todos los filtros y no solo la marca.
+ */
+export async function contarFacetas(): Promise<Facetas> {
+  const supabase = crearClientePublico();
 
   const { data, error } = await supabase
     .from("vehiculos")
-    .select("marca")
+    .select("marca, anio, condicion, transmision, combustible")
     .in("estado", [...ESTADOS_PUBLICOS]);
 
-  if (error) throw new Error(`No se pudo contar por marca: ${error.message}`);
+  if (error) throw new Error(`No se pudo calcular los filtros: ${error.message}`);
 
-  const conteo = new Map<string, number>();
-  for (const { marca } of data ?? []) {
-    conteo.set(marca, (conteo.get(marca) ?? 0) + 1);
-  }
+  const contar = <T>(valores: Array<T | null>) => {
+    const mapa = new Map<T, number>();
+    for (const v of valores) {
+      if (v == null) continue;
+      mapa.set(v, (mapa.get(v) ?? 0) + 1);
+    }
+    return mapa;
+  };
 
-  return [...conteo.entries()]
-    .map(([marca, total]) => ({ marca, total }))
-    .sort((a, b) => a.marca.localeCompare(b.marca, "es"));
-}
+  const filas = data ?? [];
+  const marcas = contar(filas.map((f) => f.marca));
+  const anios = contar(filas.map((f) => f.anio));
+  const condiciones = contar(filas.map((f) => f.condicion));
+  const transmisiones = contar(filas.map((f) => f.transmision));
+  const combustibles = contar(filas.map((f) => f.combustible));
 
-/** Años disponibles con su conteo, para el filtro del catálogo. */
-export async function contarPorAnio(): Promise<Array<{ anio: number; total: number }>> {
-  const supabase = await crearClienteServidor();
-
-  const { data, error } = await supabase
-    .from("vehiculos")
-    .select("anio")
-    .in("estado", [...ESTADOS_PUBLICOS]);
-
-  if (error) throw new Error(`No se pudo contar por año: ${error.message}`);
-
-  const conteo = new Map<number, number>();
-  for (const { anio } of data ?? []) {
-    conteo.set(anio, (conteo.get(anio) ?? 0) + 1);
-  }
-
-  return [...conteo.entries()]
-    .map(([anio, total]) => ({ anio, total }))
-    .sort((a, b) => b.anio - a.anio);
+  return {
+    marcas: [...marcas.entries()]
+      .map(([marca, total]) => ({ marca, total }))
+      .sort((a, b) => a.marca.localeCompare(b.marca, "es")),
+    anios: [...anios.entries()]
+      .map(([anio, total]) => ({ anio, total }))
+      .sort((a, b) => b.anio - a.anio),
+    condiciones: [...condiciones.entries()]
+      .map(([condicion, total]) => ({ condicion, total }))
+      .sort((a, b) => a.condicion.localeCompare(b.condicion, "es")),
+    transmisiones: [...transmisiones.entries()]
+      .map(([transmision, total]) => ({ transmision, total }))
+      .sort((a, b) => a.transmision.localeCompare(b.transmision, "es")),
+    combustibles: [...combustibles.entries()]
+      .map(([combustible, total]) => ({ combustible, total }))
+      .sort((a, b) => a.combustible.localeCompare(b.combustible, "es")),
+  };
 }
 
 /** Catálogo de opciones de equipamiento y seguridad. */
 export async function listarOpcionesEquipamiento() {
-  const supabase = await crearClienteServidor();
+  const supabase = crearClientePublico();
 
   const { data, error } = await supabase
     .from("opciones_equipamiento")

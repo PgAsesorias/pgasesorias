@@ -164,3 +164,69 @@ npm run auditar
 ```
 
 **Resultado actual del inventario: 7 vehículos, 0 errores, 2 avisos.**
+
+---
+
+## Fase 4 — Sitio público: home, catálogo y ficha
+
+### Home
+
+Las 9 secciones del sitio actual, con sus textos, más lo que faltaba:
+
+- **Contadores que sí se ven.** Hoy el sitio muestra un "+" sin número porque el
+  plugin falla. Los valores reales estaban escondidos en el HTML: ahora se animan
+  al entrar en pantalla (100+, 250+, 500+ y 7), y quien tiene activado "reducir
+  movimiento" ve el número final de inmediato.
+- **Instagram honesto.** El plugin actual muestra imágenes rotas. Hasta conectar la
+  API de Instagram, se muestra una invitación a seguir la cuenta en vez de fotos
+  falsas.
+- **Vehículos reales desde la base**, con el mismo precio que el catálogo
+  (hoy la home y el catálogo muestran precios distintos para el mismo auto).
+- **Ortografía corregida** en todos los títulos: "Contacto" y "Flota para Empresas"
+  ya no aparecen como "cONTACTO" ni "fLOTA PARA EMPRESAS".
+
+### Tarjeta de vehículo
+
+Una sola tarjeta para home y catálogo, así no pueden volver a mostrar datos
+distintos. Precio de oferta destacado con el precio normal tachado, insignia de
+"Oferta", y estados "Reservado" / "Vendido" cuando corresponde. El botón ahora dice
+**"Detalles"** y no "dETALLES".
+
+### Catálogo
+
+- Los filtros del sitio actual (marca, estado, año) **más** búsqueda por texto,
+  transmisión, combustible, precio máximo y orden (recientes, precio, kilómetros, año).
+- Cada filtro muestra **cuántos vehículos tiene** ("Toyota (1)", "Usado (4)").
+- **Todo vive en la URL**: `/vehiculos-en-venta?marca=Nissan` se puede compartir por
+  WhatsApp, guardar en favoritos y lo puede indexar Google. Los resultados se
+  calculan en el servidor.
+- Chips para quitar filtros uno a uno y "Limpiar todo".
+- Si no hay resultados, en vez de una página vacía se ofrece escribir por WhatsApp
+  contando qué busca el cliente.
+
+### Ficha del vehículo
+
+- **Galería** con miniaturas, lightbox a pantalla completa, navegación con flechas
+  del teclado, `Escape` para cerrar y deslizar con el dedo en el celular.
+- Precio con "Antes / Precio oferta", botones de WhatsApp (con mensaje prellenado
+  que incluye el auto y su link) y de cotización.
+- Ficha técnica completa, equipamiento y seguridad con ✓ verdes, y navegación al
+  vehículo anterior y siguiente.
+- "Otros vehículos en venta" priorizando autos de precio parecido.
+- **SEO por vehículo, no genérico:**
+  - `og:image` = la foto de portada de ese auto. Hoy **todas** las fichas comparten
+    la misma imagen (el logo), así que compartir un auto por WhatsApp muestra el logo
+    en vez del vehículo.
+  - Título y descripción armados con los datos reales del auto.
+  - JSON-LD `Car` + `Offer` en CLP con disponibilidad (`InStock`, `LimitedAvailability`
+    si está reservado, `SoldOut` si se vendió) y `BreadcrumbList`, para que Google
+    pueda mostrar precio y características en los resultados.
+  - URL limpia `/vehiculos-en-venta/{slug}`, la misma que ya tenía el auto en WordPress.
+
+### Rendimiento
+
+- Home y fichas se generan estáticamente y se revalidan cada 5–10 minutos; no
+  consultan la base en cada visita.
+- Las lecturas públicas usan un cliente sin cookies, justamente para que las páginas
+  puedan quedar en caché.
+- Fotos en WebP con tamaños adaptados al dispositivo (`next/image`).
