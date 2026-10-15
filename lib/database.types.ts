@@ -180,12 +180,33 @@ export type Database = {
       };
       consultas: {
         Row: ConsultaRow;
-        Insert: Omit<ConsultaRow, "id" | "created_at" | "atendida" | "origen" | "estado"> & {
+        Insert: Omit<
+          ConsultaRow,
+          | "id"
+          | "created_at"
+          | "atendida"
+          | "origen"
+          | "estado"
+          | "datos"
+          | "pagina"
+          | "utm"
+          | "telefono"
+          | "email"
+          | "mensaje"
+          | "vehiculo_id"
+        > & {
           id?: string;
           created_at?: string;
           atendida?: boolean;
           origen?: string;
           estado?: string;
+          telefono?: string | null;
+          email?: string | null;
+          mensaje?: string | null;
+          vehiculo_id?: string | null;
+          datos?: Json | null;
+          pagina?: string | null;
+          utm?: Json | null;
         };
         Update: Partial<ConsultaRow>;
         Relationships: [

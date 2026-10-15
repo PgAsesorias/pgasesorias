@@ -230,3 +230,67 @@ distintos. Precio de oferta destacado con el precio normal tachado, insignia de
 - Las lecturas públicas usan un cliente sin cookies, justamente para que las páginas
   puedan quedar en caché.
 - Fotos en WebP con tamaños adaptados al dispositivo (`next/image`).
+
+---
+
+## Fase 6 — Páginas del menú y captura de leads
+
+Las 6 páginas que faltaban del menú ya existen. Antes, 6 de los 8 enlaces del
+menú llevaban a una página inexistente.
+
+### Páginas nuevas
+
+- **Servicios** — los 8 servicios con sus textos, los 4 pasos para agendar y
+  JSON-LD `AutoRepair` con el catálogo de servicios.
+- **Nosotros** — historia, cómo trabajamos, contadores y JSON-LD `AutoDealer`
+  con dirección, horario y calificación.
+- **Contacto** — los 5 canales, formulario y mapa. Si llega desde una ficha
+  (`/contacto?vehiculo=...`), muestra de qué vehículo se trata y el lead queda
+  asociado a ese auto.
+- **Compramos tu Vehículo** — las dos modalidades (compra directa y consignación)
+  y formulario de tasación con patente, marca/modelo, año, kilometraje y precio
+  esperado.
+- **Flota de Empresas** — propuesta para empresas y formulario de cotización
+  (empresa, RUT, cantidad y tipo de flota). **Sin imágenes enlazadas desde sitios
+  ajenos**: la página actual carga fotos desde infocampo, grupopana y gstatic,
+  que es un riesgo legal y se puede caer en cualquier momento.
+- **Blog** — página honesta de "próximamente", marcada como `noindex` mientras no
+  haya artículos, en vez de un enlace roto en el menú.
+
+### Los leads ya no se pierden
+
+Hoy todo contacto depende de WhatsApp y no queda registro. Ahora cada envío se
+guarda en la tabla `consultas` con el origen (contacto, cotizar, tasación, flota),
+la página desde donde se envió y el vehículo asociado si corresponde.
+
+Probado de punta a punta en un navegador real:
+
+| Prueba | Resultado |
+|---|---|
+| Enviar vacío | Rechazado: "Escribe tu nombre." |
+| Sin teléfono ni correo | Rechazado: "Déjanos un teléfono o un correo para poder responderte." |
+| Correo mal escrito | Rechazado: "Revisa el correo." |
+| Envío válido desde una ficha | Guardado, con el vehículo asociado |
+| Robot (campo trampa lleno) | Descartado en silencio, no llega a la base |
+| 6 envíos seguidos desde la misma IP | Bloqueado por 10 minutos |
+
+**Nada de lo escrito se pierde al corregir un error.** Si el cliente llena el
+formulario de tasación completo y se equivoca en el correo, al volver conserva
+todos los campos: nombre, teléfono, marca, año, kilometraje, la opción elegida y
+el mensaje. Es la diferencia entre recibir el lead o perderlo.
+
+### Otros agregados
+
+- **Página 404 útil**: en vez de un error seco, ofrece el catálogo, WhatsApp y
+  todo el menú. Sirve para los enlaces viejos de vehículos ya vendidos.
+- **Sitemap dinámico** (`/sitemap.xml`): 13 URLs, incluidos los vehículos con su
+  fecha de última modificación.
+- **robots.txt** que bloquea `/admin` y apunta al sitemap.
+
+### Un bug encontrado al revisar las capturas
+
+El footer se veía **blanco sobre blanco en todas las páginas**: usaba una clase de
+color que no existía, y Tailwind las ignora en silencio. Además de corregirlo, se
+agregó `npm run verificar:tokens`, que compara todas las clases de marca usadas
+contra los tokens declarados y falla si falta alguna. Ese tipo de error no puede
+volver a pasar desapercibido.

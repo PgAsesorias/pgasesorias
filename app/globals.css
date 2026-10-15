@@ -51,6 +51,8 @@
   --color-pg-border: var(--pg-border);
   --color-pg-muted: var(--pg-muted);
   --color-pg-yellow: var(--pg-yellow);
+  --color-pg-header: var(--pg-header);
+  --color-pg-footer: var(--pg-footer);
 
   --font-titulo: var(--font-anek-bangla), ui-sans-serif, system-ui, sans-serif;
   --font-texto: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
