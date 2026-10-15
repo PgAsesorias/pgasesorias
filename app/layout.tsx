@@ -1,8 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Anek_Bangla, Source_Sans_3 } from "next/font/google";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { BarraMovil } from "@/components/layout/BarraMovil";
 import { sitio } from "@/lib/site";
 import "./globals.css";
 
@@ -47,23 +44,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es-CL" className={`${anekBangla.variable} ${sourceSans.variable} h-full`}>
-      <body className="flex min-h-full flex-col">
-        <a
-          href="#contenido"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-pill focus:bg-pg-white focus:px-5 focus:py-2 focus:font-semibold focus:text-pg-ink"
-        >
-          Ir al contenido
-        </a>
-
-        <Header />
-
-        <main id="contenido" className="flex-1">
-          {children}
-        </main>
-
-        <Footer />
-        <BarraMovil />
-      </body>
+      <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
 }

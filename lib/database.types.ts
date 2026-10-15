@@ -69,32 +69,15 @@ type VehiculoRow = {
   vistas: number;
 };
 
-type VehiculoInsert = Omit<
+/**
+ * Para insertar solo son obligatorias las columnas NOT NULL sin valor por
+ * defecto; el resto las completa Postgres.
+ */
+type VehiculoInsert = Pick<
   VehiculoRow,
-  | "id"
-  | "created_at"
-  | "updated_at"
-  | "publicado_at"
-  | "ubicacion"
-  | "equipamiento"
-  | "seguridad"
-  | "estado"
-  | "destacado"
-  | "revisado_pg"
-  | "vistas"
-> & {
-  id?: string;
-  created_at?: string;
-  updated_at?: string;
-  publicado_at?: string | null;
-  ubicacion?: string;
-  equipamiento?: string[];
-  seguridad?: string[];
-  estado?: EstadoPublicacion;
-  destacado?: boolean;
-  revisado_pg?: boolean;
-  vistas?: number;
-};
+  "slug" | "titulo" | "marca" | "modelo" | "anio" | "kilometraje" | "transmision" | "combustible" | "precio"
+> &
+  Partial<Omit<VehiculoRow, "slug" | "titulo" | "marca" | "modelo" | "anio" | "kilometraje" | "transmision" | "combustible" | "precio">>;
 
 type FotoRow = {
   id: string;

@@ -294,3 +294,71 @@ color que no existía, y Tailwind las ignora en silencio. Además de corregirlo,
 agregó `npm run verificar:tokens`, que compara todas las clases de marca usadas
 contra los tokens declarados y falla si falta alguna. Ese tipo de error no puede
 volver a pasar desapercibido.
+
+---
+
+## Fase 5 — Panel de administración
+
+El panel vive en `/admin`, está fuera de Google (`noindex` + bloqueado en
+robots.txt) y solo entran los correos que estén en `admin_users`. La protección
+se aplica dos veces: en el middleware y otra vez en el servidor, dentro del
+layout del panel.
+
+### Cargar un vehículo
+
+El formulario va por secciones: datos básicos → precio → ficha técnica →
+equipamiento y seguridad → fotos → descripción → publicación.
+
+- **El título se arma solo** con el formato del sitio
+  (`Toyota 4Runner Limited V6 4.0 Automático 5 Puertas, Tracción 4X4, Año 2018`)
+  y se actualiza mientras se escribe. Se puede editar a mano si hace falta.
+- **La URL de un vehículo ya publicado no cambia** aunque se edite el título:
+  los enlaces compartidos siguen funcionando.
+- **El precio se formatea mientras se escribe**: `18990000` se ve `18.990.000`.
+  Si hay oferta, muestra el ahorro que verá el cliente.
+- **Avisos de coherencia en vivo**, abajo en la barra de guardado: si el título
+  dice Diésel y el campo dice Gasolina, aparece antes de publicar. Es el error
+  que hoy tiene el Maxus T60 en el sitio.
+- **Equipamiento y seguridad** como chips que se tocan; en el celular no hay que
+  apuntarle a una casilla chica.
+
+### Fotos
+
+- Arrastrar y soltar varias a la vez, elegir del teléfono o **tomar la foto con
+  la cámara** desde el mismo formulario.
+- Se **comprimen en el navegador** antes de subir (máximo 1920px, WebP 80%): se
+  suben en segundos incluso con datos móviles.
+- Barra de progreso por foto, reordenar arrastrando, la primera es la portada y
+  se puede eliminar una por una.
+- **No se puede guardar mientras una foto está subiendo.** Se detectó probando:
+  el botón quedaba disponible y las fotos que aún no terminaban se perdían sin
+  aviso. Ahora el botón dice "Esperando fotos…" y se bloquea.
+
+### Lista y acciones rápidas
+
+Cada vehículo muestra foto, estado, precio (con la oferta tachada), fotos que
+tiene y cuándo se editó. Desde la misma fila: **editar, ver en el sitio, cambiar
+estado** (borrador / publicado / reservado / vendido), **destacar, duplicar y
+eliminar** con confirmación. Avisa en rojo si a un vehículo **le faltan fotos**.
+
+Al guardar se refrescan solas la home, el catálogo, la ficha y el sitemap.
+
+### Bandeja de consultas
+
+Los leads del sitio con su origen (contacto, cotización, tasación, flota), el
+vehículo por el que preguntaron, los datos del formulario y la página desde donde
+escribieron. Botón **Responder por WhatsApp** con el mensaje ya escrito, y marcar
+como atendida. Hoy nada de esto existe: todo llega por WhatsApp y se pierde.
+
+### Un bug de móvil encontrado probando
+
+La **barra fija de WhatsApp del sitio público tapaba el botón "Guardar"** del
+panel en el celular: Pablo no habría podido publicar un auto desde el teléfono.
+Además el panel arrastraba el header y el footer del sitio público. Se separaron
+los dos layouts: el sitio tiene su armazón y el panel el suyo.
+
+### Medido, no estimado
+
+Un vehículo completo (datos, precio, ficha técnica, 4 opciones de equipamiento,
+3 fotos y publicación) **se carga en 5,2 segundos desde un celular de 390px**.
+La meta del brief era menos de 2 minutos con 12 fotos.
