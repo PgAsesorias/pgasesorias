@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "node --test \"lib/**/*.test.ts\"",
-    "verificar:supabase": "node --env-file=.env.local scripts/verificar-supabase.ts"
+    "verificar:supabase": "node --env-file=.env.local scripts/verificar-supabase.ts",
+    "tipos:supabase": "supabase gen types typescript --project-id noozrbmmukctabusnwdy --schema public"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

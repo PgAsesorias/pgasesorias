@@ -69,3 +69,53 @@ mostrárselo al cliente. Se actualiza al cerrar cada fase.
 - Todos los datos de la empresa centralizados en `lib/site.ts`: cambiar un teléfono
   o un horario es editar una sola línea.
 - `npm run build` y `npm run lint` sin errores.
+
+---
+
+## Fase 2 — Base de datos y capa de datos
+
+### Lo que quedó montado en Supabase
+
+- Proyecto `PgAsesorias's Project` (ref `noozrbmmukctabusnwdy`), Postgres 17.11.
+- `schema.sql` y `upgrades.sql` aplicados: 10 tablas + 1 vista, 28 políticas de
+  seguridad, 18 opciones de equipamiento, 8 servicios y 3 claves de configuración.
+- Tres buckets de Storage: `vehiculos` (público), `informes` (público),
+  `tasaciones` (privado, porque guarda datos del vehículo de un cliente).
+
+### Seguridad verificada, no supuesta
+
+Se probó con la clave pública contra la base real:
+| Prueba | Resultado |
+|---|---|
+| El público ve los vehículos publicados | ✅ sí |
+| El público ve los borradores | ✅ no (quedan ocultos) |
+| El público puede crear/editar vehículos | ✅ no (HTTP 401) |
+| El público puede enviar una consulta (lead) | ✅ sí |
+| El público puede leer las consultas de otros | ✅ no (0 filas) |
+
+En el sitio actual cualquier dato está donde lo dejó el plugin; acá cada tabla
+tiene reglas explícitas y comprobadas.
+
+### Calidad de datos desde la base
+
+- El propio Postgres rechaza los errores que hoy tiene el sitio: el año tiene que
+  estar entre 1950 y el año siguiente (el "1970" del Peugeot 3008 no entra), el
+  precio de oferta **tiene** que ser menor al precio, el kilometraje no puede ser
+  negativo, y transmisión/combustible solo aceptan valores de una lista cerrada.
+- La clave `service_role` (que salta esas reglas) solo se usa en código de servidor:
+  los módulos que la tocan llevan `import "server-only"`, así que el build falla si
+  alguien intenta importarlos desde el navegador.
+- Se usan las **claves nuevas de Supabase** (`sb_publishable_` / `sb_secret_`), que
+  se pueden rotar de forma independiente, en vez de las claves JWT heredadas.
+
+### Capa de datos lista para el sitio
+
+- Listado con filtros (marca, condición, año, rango de precio, transmisión,
+  combustible, búsqueda por texto, "Revisado por PG"), orden y paginación.
+- Ficha por slug con fotos ordenadas, vehículo anterior/siguiente, y
+  "otros vehículos" priorizando precio parecido.
+- Conteos por marca y por año para los filtros con número, como en el sitio actual.
+- Título SEO y slug compatibles con WordPress, con 10 tests automáticos: las URLs
+  de los vehículos ya publicados no se rompen.
+- `npm run verificar:supabase` revisa en 5 segundos que la base, las semillas, los
+  buckets y los administradores estén bien. Si algo falta, dice exactamente qué.
