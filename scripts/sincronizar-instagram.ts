@@ -22,7 +22,9 @@ import sharp from "sharp";
 import { chromium } from "playwright";
 
 const WP_URL = (process.env.WP_URL ?? "https://pgasesorias.cl").replace(/\/$/, "");
-const BUCKET = "instagram";
+// Nombre neutro a propósito: los bloqueadores de publicidad filtran cualquier
+// URL que contenga "instagram" y dejarían la grilla en blanco.
+const BUCKET = "social";
 const MAX_PUBLICACIONES = 12;
 const LADO = 800;
 

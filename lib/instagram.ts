@@ -3,7 +3,11 @@ import "server-only";
 import { crearClientePublico } from "@/lib/supabase/publico";
 import { supabaseUrl } from "@/lib/env";
 
-export const BUCKET_INSTAGRAM = "instagram";
+/**
+ * Nombre neutro a propósito: los bloqueadores de publicidad filtran las URLs
+ * que contienen "instagram" y la grilla quedaría vacía en esos navegadores.
+ */
+export const BUCKET_INSTAGRAM = "social";
 
 export type PublicacionInstagram = {
   id: string;
