@@ -362,3 +362,33 @@ los dos layouts: el sitio tiene su armazón y el panel el suyo.
 Un vehículo completo (datos, precio, ficha técnica, 4 opciones de equipamiento,
 3 fotos y publicación) **se carga en 5,2 segundos desde un celular de 390px**.
 La meta del brief era menos de 2 minutos con 12 fotos.
+
+---
+
+## Hero nuevo con el Instagram real
+
+El sitio actual tiene el hero dividido —texto a la izquierda, feed de Instagram a
+la derecha— pero el feed depende de un plugin que **enlaza las fotos al CDN de
+Instagram**, y esas direcciones vienen firmadas y caducan: por eso en el sitio
+aparecen imágenes rotas.
+
+Ahora:
+
+- Mismo esquema de dos columnas, pero la tarjeta de texto es más legible (prefijo,
+  barra de marca, título, párrafo y botones) y suma tres garantías visibles:
+  vehículos revisados, retiro y entrega a domicilio, transferencia incluida.
+- **Las 12 últimas publicaciones se descargan y se alojan en el Storage propio**,
+  convertidas a WebP cuadrado de 800px (entre 22 y 108 KB cada una). El feed no se
+  puede volver a romper por una URL caducada.
+- Cada miniatura enlaza a su publicación real en Instagram, con el ícono de reel o
+  de carrusel según corresponda, y crece suavemente al pasar el mouse.
+- En el celular la tarjeta va primero y la grilla debajo, las dos legibles.
+- Se eliminó el botón "Cargar más" del plugin, que no aportaba nada.
+
+Para actualizar el feed: `npm run instagram`.
+
+> **Sobre conectar Instagram en vivo:** se hace con un *token de acceso* de la
+> Instagram Graph API (revocable, solo permiso de lectura), nunca con la
+> contraseña de la cuenta. Queda como upgrade v2 nº 18. Aun con la API conectada,
+> las imágenes se seguirán copiando al Storage propio: las que entrega Instagram
+> caducan igual.

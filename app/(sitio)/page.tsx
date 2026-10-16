@@ -7,74 +7,105 @@ import { Tarjeta } from "@/components/ui/Tarjeta";
 import { IconoAuto, IconoCheck, IconoWhatsApp } from "@/components/ui/Iconos";
 import { Contadores } from "@/components/home/Contadores";
 import { Servicios } from "@/components/home/Servicios";
-import { Instagram } from "@/components/home/Instagram";
+import { GrillaInstagram } from "@/components/home/GrillaInstagram";
 import { CanalesContacto } from "@/components/home/CanalesContacto";
 import { TarjetaVehiculo } from "@/components/vehiculos/TarjetaVehiculo";
 import { listarVehiculos } from "@/lib/vehiculos";
+import { ultimasPublicaciones } from "@/lib/instagram";
 import { marca, pasosAgenda, whatsappUrl } from "@/lib/site";
 
 /** La home se regenera cada 10 minutos, o al guardar desde el admin. */
 export const revalidate = 600;
 
 export default async function Home() {
-  const { vehiculos } = await listarVehiculos({ porPagina: 3 });
+  const [{ vehiculos }, publicaciones] = await Promise.all([
+    listarVehiculos({ porPagina: 3 }),
+    ultimasPublicaciones(6),
+  ]);
 
   return (
     <>
       {/* ───────── 1. Hero ───────── */}
-      <section className="bg-pg-black text-pg-white">
-        <div className="pg-contenedor pg-seccion">
-          <p className="text-[18px] font-bold uppercase tracking-wide text-pg-orange">
-            Bienvenido a PG Asesorías
-          </p>
+      <section className="relative isolate overflow-hidden bg-pg-black">
+        {/* Foto de fondo del taller, atenuada para que el texto se lea */}
+        <Image
+          src={marca.fotoTaller}
+          alt=""
+          aria-hidden
+          fill
+          priority
+          sizes="100vw"
+          className="-z-10 object-cover object-center opacity-35"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 bg-gradient-to-r from-pg-black via-pg-black/85 to-pg-black/60"
+        />
 
-          <h1 className="mt-3 max-w-4xl text-[40px] leading-tight lg:text-[64px]">
-            Servicios Automotrices
-          </h1>
+        <div className="pg-contenedor grid items-center gap-10 py-14 lg:grid-cols-[1fr_0.95fr] lg:gap-12 lg:py-24">
+          {/* Tarjeta de texto */}
+          <div className="rounded-card bg-pg-white p-7 shadow-pg-card sm:p-10 lg:p-12">
+            <p className="text-[15px] font-bold uppercase tracking-[0.18em] text-pg-red">
+              Bienvenido a PG Asesorías
+            </p>
+            <span aria-hidden className="pg-degradado mt-4 block h-1 w-16 rounded-full" />
 
-          <p className="mt-6 max-w-3xl text-[18px] leading-relaxed text-white/80">
-            <Link href="/vehiculos-en-venta" className="font-semibold text-pg-orange underline-offset-4 hover:underline">
-              Compra
-            </Link>
-            ,{" "}
-            <Link href="/vende_tu_vehiculo" className="font-semibold text-pg-orange underline-offset-4 hover:underline">
-              vende
-            </Link>{" "}
-            o{" "}
-            <Link href="/servicios" className="font-semibold text-pg-orange underline-offset-4 hover:underline">
-              repara
-            </Link>{" "}
-            tu vehículo con total confianza. Somos expertos en soluciones automotrices de todo
-            tipo. Te ayudamos con tu mantención, mecánica vehicular, repuestos o cualquier
-            problema automotriz.
-          </p>
+            <h1 className="mt-6 text-[38px] leading-[1.08] lg:text-[54px]">
+              Servicios Automotrices
+            </h1>
 
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-            <BotonPrincipal href="/vehiculos-en-venta" icono={<IconoAuto width={20} height={20} />}>
-              Vehículos en venta
-            </BotonPrincipal>
-            <BotonSecundario
-              href={whatsappUrl()}
-              target="_blank"
-              rel="noopener noreferrer"
-              icono={<IconoWhatsApp width={20} height={20} />}
-              className="border-pg-white bg-transparent hover:bg-pg-white hover:text-pg-ink"
-            >
-              Agendar Servicio Automotriz
-            </BotonSecundario>
+            <p className="mt-5 text-[17px] leading-relaxed text-pg-gray lg:text-[18px]">
+              <Link href="/vehiculos-en-venta" className="font-semibold text-pg-red underline-offset-4 hover:underline">
+                Compra
+              </Link>
+              ,{" "}
+              <Link href="/vende_tu_vehiculo" className="font-semibold text-pg-red underline-offset-4 hover:underline">
+                vende
+              </Link>{" "}
+              o{" "}
+              <Link href="/servicios" className="font-semibold text-pg-red underline-offset-4 hover:underline">
+                repara tu vehículo
+              </Link>{" "}
+              con total confianza. Somos expertos en soluciones automotrices de todo tipo.
+              Te ayudamos con tu mantención, mecánica vehicular, repuestos o cualquier
+              problema automotriz.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <BotonPrincipal href="/vehiculos-en-venta" icono={<IconoAuto width={20} height={20} />}>
+                Vehículos en venta
+              </BotonPrincipal>
+              <BotonSecundario
+                href={whatsappUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                icono={<IconoWhatsApp width={20} height={20} />}
+              >
+                Agendar servicio
+              </BotonSecundario>
+            </div>
+
+            <ul className="mt-9 flex flex-wrap gap-x-7 gap-y-3 border-t border-pg-border/70 pt-6 text-[14px] text-pg-gray">
+              {["Vehículos revisados", "Retiro y entrega a domicilio", "Transferencia incluida"].map(
+                (t) => (
+                  <li key={t} className="flex items-center gap-2">
+                    <IconoCheck width={16} height={16} className="shrink-0 text-pg-check" />
+                    {t}
+                  </li>
+                ),
+              )}
+            </ul>
           </div>
+
+          {/* Instagram en vivo */}
+          <GrillaInstagram publicaciones={publicaciones} />
         </div>
 
         <DivisorDiagonal color="var(--pg-bg)" />
       </section>
 
-      {/* ───────── 2. Instagram ───────── */}
+      {/* ───────── 2. Agendar un servicio ───────── */}
       <section className="pg-contenedor py-16">
-        <Instagram />
-      </section>
-
-      {/* ───────── 3. Agendar un servicio ───────── */}
-      <section className="pg-contenedor pb-16">
         <EncabezadoSeccion
           prefijo="Agenda online"
           titulo="¿Quieres agendar un Servicio Automotriz?"

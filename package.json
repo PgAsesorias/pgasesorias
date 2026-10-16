@@ -13,7 +13,8 @@
     "auditar": "node --env-file=.env.local scripts/auditar-vehiculos.ts",
     "migrar": "node --env-file=.env.local scripts/migrar-desde-wordpress.ts",
     "capturas": "node scripts/capturas.mjs",
-    "verificar:tokens": "node scripts/verificar-tokens.mjs"
+    "verificar:tokens": "node scripts/verificar-tokens.mjs",
+    "instagram": "node --env-file=.env.local scripts/sincronizar-instagram.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

@@ -18,8 +18,8 @@ type ComoBoton = Comun & { href?: undefined } & Omit<ComponentProps<"button">, "
 type PropsBoton = ComoEnlace | ComoBoton;
 
 const baseClases =
-  "inline-flex items-center justify-center gap-4 rounded-pill px-8 py-3.5 " +
-  "text-[18px] font-semibold leading-tight no-underline " +
+  "inline-flex items-center justify-center gap-3 whitespace-nowrap rounded-pill px-7 py-3.5 " +
+  "text-[17px] font-semibold leading-tight no-underline " +
   "transition-[box-shadow,background-color,color,transform] duration-200 " +
   "active:translate-y-px disabled:pointer-events-none disabled:opacity-60";
 
