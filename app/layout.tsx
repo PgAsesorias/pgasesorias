@@ -33,7 +33,10 @@ export const metadata: Metadata = {
     title: "PG Asesorías | Servicios automotrices en Santiago",
     description: sitio.descripcion,
   },
-  robots: { index: true, follow: true },
+  // En el dominio de pruebas, nada se indexa (ver app/robots.ts).
+  robots: /vercel\.app|localhost/.test(sitio.url)
+    ? { index: false, follow: false }
+    : { index: true, follow: true },
 };
 
 export const viewport: Viewport = {

@@ -6,6 +6,10 @@ export const revalidate = 3600;
 
 /** Sitemap dinámico: las páginas fijas más cada vehículo publicado. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // En el dominio de pruebas no se publica sitemap: evita que Google
+  // descubra e indexe la copia.
+  if (/vercel\.app|localhost/.test(sitio.url)) return [];
+
   const fijas: MetadataRoute.Sitemap = [
     { url: `${sitio.url}/`, changeFrequency: "daily", priority: 1 },
     { url: `${sitio.url}/vehiculos-en-venta`, changeFrequency: "daily", priority: 0.9 },
