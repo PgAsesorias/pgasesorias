@@ -315,6 +315,7 @@ export type Database = {
     };
     Functions: {
       is_admin: { Args: Record<string, never>; Returns: boolean };
+      incrementar_vistas: { Args: { id_vehiculo: string }; Returns: undefined };
     };
     Enums: {
       estado_publicacion: EstadoPublicacion;

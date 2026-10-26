@@ -180,3 +180,17 @@ drop policy if exists "tasaciones admin" on storage.objects;
 create policy "tasaciones admin" on storage.objects for all
   using (bucket_id = 'tasaciones' and public.is_admin())
   with check (bucket_id = 'tasaciones' and public.is_admin());
+
+-- -------------------------------------------------------------
+-- Contador de vistas por vehículo (atómico, llamado desde el sitio)
+-- -------------------------------------------------------------
+create or replace function public.incrementar_vistas(id_vehiculo uuid)
+returns void
+language sql
+security definer
+set search_path = public
+as $$
+  update public.vehiculos set vistas = vistas + 1 where id = id_vehiculo;
+$$;
+
+grant execute on function public.incrementar_vistas(uuid) to anon, authenticated;

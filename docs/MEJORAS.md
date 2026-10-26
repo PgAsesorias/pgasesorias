@@ -392,3 +392,46 @@ Para actualizar el feed: `npm run instagram`.
 > contraseña de la cuenta. Queda como upgrade v2 nº 18. Aun con la API conectada,
 > las imágenes se seguirán copiando al Storage propio: las que entrega Instagram
 > caducan igual.
+
+---
+
+## Analítica: saber qué funciona y qué no
+
+Hoy no hay forma de saber cuántas personas vieron un auto ni cuántas escribieron
+por WhatsApp. Ahora se mide en dos capas, a propósito:
+
+### 1. Analítica propia (siempre funciona)
+
+Cada evento se guarda en la tabla `eventos` del propio Supabase: vista de ficha,
+clic en WhatsApp, clic en teléfono, uso del simulador, compartir. **No usa cookies
+ni identifica a nadie**, así que no la bloquean los bloqueadores de publicidad y no
+requiere consentimiento. Es la que alimentará el panel de PG: vistas por vehículo,
+días en inventario y de dónde llegan las consultas.
+
+Se registra solo, sin tocar cada botón: un único oyente detecta los clics a
+WhatsApp y teléfono en todo el sitio, incluidos los que se agreguen después. Cada
+ficha además suma a su contador de vistas.
+
+Entre el 20 % y el 40 % de los visitantes bloquea Google Analytics. Esos quedan
+igualmente contados acá.
+
+### 2. Google Analytics y Meta Pixel (para campañas)
+
+Se cargan **solo si el visitante acepta las cookies** y solo si el ID está
+configurado. Sin ID, no se descarga ni un byte extra.
+
+Eventos que se envían a Google: `vista_ficha`, `clic_whatsapp`, `clic_telefono`,
+`simulador`, `compartir`. A Meta se traducen a sus conversiones estándar
+(`Contact`, `ViewContent`) para poder optimizar las campañas de Instagram.
+
+### Banner de cookies
+
+Aceptar o rechazar, con la decisión recordada. Si rechaza, el sitio funciona
+igual y no se carga nada de Google ni de Meta. Comprobado en el navegador: con
+cookies rechazadas, **cero peticiones** a googletagmanager, google-analytics o
+facebook.
+
+### Velocidad real
+
+Vercel Analytics y Speed Insights quedan activos: miden visitas y la velocidad de
+carga que experimentan los visitantes de verdad, sin cookies.
