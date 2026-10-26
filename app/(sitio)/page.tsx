@@ -182,7 +182,7 @@ export default async function Home() {
 
           <Link href="/vende_tu_vehiculo" className="block justify-self-center" aria-hidden tabIndex={-1}>
             <Image
-              src="/marca/compramos-tu-auto.webp"
+              src="/pg/compramos-tu-auto.webp"
               alt=""
               width={900}
               height={1125}

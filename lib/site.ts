@@ -189,8 +189,8 @@ export const pasosAgenda = [
 ] as const;
 
 export const marca = {
-  logo: "/marca/logo-pg-asesorias.webp",
+  logo: "/pg/logo-pg-asesorias.webp",
   logoAncho: 790,
   logoAlto: 568,
-  fotoTaller: "/marca/taller-nosotros.webp",
+  fotoTaller: "/pg/taller-nosotros.webp",
 } as const;

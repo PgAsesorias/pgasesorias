@@ -56,7 +56,7 @@ export default async function ArticuloPage({ params }: Props) {
     publisher: {
       "@type": "Organization",
       name: sitio.nombre,
-      logo: { "@type": "ImageObject", url: `${sitio.url}/marca/logo-pg-asesorias.webp` },
+      logo: { "@type": "ImageObject", url: `${sitio.url}/pg/logo-pg-asesorias.webp` },
     },
     mainEntityOfPage: `${sitio.url}/blog/${articulo.slug}`,
     ...(articulo.portada ? { image: `${sitio.url}${articulo.portada}` } : {}),

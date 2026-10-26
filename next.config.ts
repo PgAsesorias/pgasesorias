@@ -35,6 +35,9 @@ const nextConfig: NextConfig = {
    * sitemaps del sitio actual (64 URLs revisadas una por una).
    */
   async redirects() {
+    // Nota: las reglas con :slug((?!.*\.).*) excluyen a propósito cualquier
+    // ruta con punto (archivos). Sin eso, /marca/:resto* capturaba también
+    // /marca/logo-pg-asesorias.webp y el logo dejaba de cargarse.
     const marcas = ["toyota", "nissan", "peugeot", "mitsubishi", "maxus", "renault"];
     const anios = ["2004", "2013", "2018", "2022", "2023"];
 
@@ -53,8 +56,8 @@ const nextConfig: NextConfig = {
 
       // Categorías y etiquetas del blog: no se replican, van al índice.
       { source: "/category/blog", destination: "/blog", permanent: true },
-      { source: "/category/blog/:resto*", destination: "/blog", permanent: true },
-      { source: "/tag/:resto*", destination: "/blog", permanent: true },
+      { source: "/category/blog/:slug((?!.*\\.).*)", destination: "/blog", permanent: true },
+      { source: "/tag/:slug((?!.*\\.).*)", destination: "/blog", permanent: true },
 
       // Archivos por marca y año → catálogo filtrado.
       ...marcas.map((m) => ({
@@ -73,16 +76,16 @@ const nextConfig: NextConfig = {
       { source: "/tipo-de-combustible/gasolina", destination: "/vehiculos-en-venta?combustible=Gasolina", permanent: true },
       { source: "/transmision/automatica", destination: "/vehiculos-en-venta?transmision=Autom%C3%A1tica", permanent: true },
       { source: "/transmision/manual", destination: "/vehiculos-en-venta?transmision=Manual", permanent: true },
-      { source: "/marca/:resto*", destination: "/vehiculos-en-venta", permanent: true },
-      { source: "/ano/:resto*", destination: "/vehiculos-en-venta", permanent: true },
-      { source: "/estado-del-vehiculo/:resto*", destination: "/vehiculos-en-venta", permanent: true },
-      { source: "/tipo-de-combustible/:resto*", destination: "/vehiculos-en-venta", permanent: true },
-      { source: "/transmision/:resto*", destination: "/vehiculos-en-venta", permanent: true },
+      { source: "/marca/:slug((?!.*\\.).*)", destination: "/vehiculos-en-venta", permanent: true },
+      { source: "/ano/:slug((?!.*\\.).*)", destination: "/vehiculos-en-venta", permanent: true },
+      { source: "/estado-del-vehiculo/:slug((?!.*\\.).*)", destination: "/vehiculos-en-venta", permanent: true },
+      { source: "/tipo-de-combustible/:slug((?!.*\\.).*)", destination: "/vehiculos-en-venta", permanent: true },
+      { source: "/transmision/:slug((?!.*\\.).*)", destination: "/vehiculos-en-venta", permanent: true },
 
       // Restos de plugins y rutas internas que no se replican.
       { source: "/shop", destination: "/vehiculos-en-venta", permanent: true },
-      { source: "/shop/:resto*", destination: "/vehiculos-en-venta", permanent: true },
-      { source: "/vehiculos/:resto*", destination: "/vehiculos-en-venta", permanent: true },
+      { source: "/shop/:slug((?!.*\\.).*)", destination: "/vehiculos-en-venta", permanent: true },
+      { source: "/vehiculos/:slug((?!.*\\.).*)", destination: "/vehiculos-en-venta", permanent: true },
       { source: "/agendamiento-amelia-interno", destination: "/contacto", permanent: true },
       { source: "/reserva_lista", destination: "/contacto", permanent: true },
 

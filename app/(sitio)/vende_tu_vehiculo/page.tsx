@@ -73,7 +73,7 @@ export default function VendeTuVehiculoPage() {
           </div>
 
           <Image
-            src="/marca/compramos-tu-auto.webp"
+            src="/pg/compramos-tu-auto.webp"
             alt="PG Asesorías compra tu auto: pago inmediato, total confianza, trato seguro"
             width={900}
             height={1125}
