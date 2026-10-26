@@ -157,3 +157,68 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ───────────────────────────────────────────────────────────────
+   Artículos del blog (HTML migrado desde WordPress)
+   ─────────────────────────────────────────────────────────────── */
+.pg-articulo {
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--pg-gray);
+}
+
+.pg-articulo p {
+  margin-block: 1.25em;
+}
+
+.pg-articulo h2 {
+  margin-block: 1.8em 0.6em;
+  font-size: 28px;
+  color: var(--pg-ink);
+}
+
+.pg-articulo h3 {
+  margin-block: 1.5em 0.5em;
+  font-size: 22px;
+  color: var(--pg-ink);
+}
+
+.pg-articulo ul,
+.pg-articulo ol {
+  margin-block: 1.25em;
+  padding-left: 1.5em;
+  list-style: disc;
+}
+
+.pg-articulo ol {
+  list-style: decimal;
+}
+
+.pg-articulo li {
+  margin-block: 0.5em;
+}
+
+.pg-articulo a {
+  color: var(--pg-red);
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+
+.pg-articulo a:hover {
+  text-decoration: underline;
+}
+
+.pg-articulo img {
+  height: auto;
+  max-width: 100%;
+  border-radius: var(--pg-radius-card);
+  margin-block: 2em;
+}
+
+.pg-articulo figure {
+  margin-block: 2em;
+}
+
+.pg-articulo strong {
+  color: var(--pg-ink);
+}

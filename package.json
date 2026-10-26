@@ -14,7 +14,8 @@
     "migrar": "node --env-file=.env.local scripts/migrar-desde-wordpress.ts",
     "capturas": "node scripts/capturas.mjs",
     "verificar:tokens": "node scripts/verificar-tokens.mjs",
-    "instagram": "node --env-file=.env.local scripts/sincronizar-instagram.ts"
+    "instagram": "node --env-file=.env.local scripts/sincronizar-instagram.ts",
+    "migrar:blog": "node --env-file=.env.local scripts/migrar-blog.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

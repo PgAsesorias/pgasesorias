@@ -435,3 +435,54 @@ facebook.
 
 Vercel Analytics y Speed Insights quedan activos: miden visitas y la velocidad de
 carga que experimentan los visitantes de verdad, sin cookies.
+
+---
+
+## No perder nada de lo que Google ya tiene indexado
+
+Se revisaron los **12 sitemaps** del sitio actual: **64 URLs indexables**. Cada
+una se probó contra el sitio nuevo.
+
+**Resultado: 64 de 64 llegan a una página real.** Antes de este trabajo, 55 de
+ellas habrían devuelto 404, perdiendo todo su posicionamiento.
+
+### El hallazgo más importante: el blog existía
+
+El sitio tiene **4 artículos publicados** que estaban indexados y traen
+búsquedas:
+
+| Artículo | Publicado |
+|---|---|
+| ¿Subieron los precios de los autos usados en Santiago este 2026? | 01-03-2026 |
+| Cómo evitar estafas al comprar un auto usado en Chile | 06-03-2026 |
+| Consejos para vender tu auto más rápido y al mejor precio | 06-03-2026 |
+| La importancia de la mantención preventiva de tu vehículo | 06-03-2026 |
+
+En el plan original el blog era una página de "próximamente": esos 4 artículos
+habrían desaparecido. Se migraron completos —texto, portadas e imágenes
+internas, convertidas a WebP y alojadas en el sitio propio— conservando slug,
+título y fecha original. Ahora tienen diseño propio, tiempo de lectura,
+etiquetas, artículos relacionados y JSON-LD `BlogPosting` para que Google pueda
+mostrarlos como artículo.
+
+### El mapa completo de redirecciones
+
+| Qué estaba indexado | A dónde va ahora |
+|---|---|
+| 7 fichas con `/?vehiculo=slug` | `/vehiculos-en-venta/slug`, **sin la query** |
+| 4 artículos en la raíz (`/autos-nuevos-son-malos`) | `/blog/autos-nuevos-son-malos` |
+| 17 etiquetas y 6 categorías del blog | `/blog` |
+| 6 archivos por marca (`/marca/toyota`) | catálogo filtrado por esa marca |
+| 5 archivos por año (`/ano/2018`) | catálogo filtrado por ese año |
+| 6 archivos de estado, combustible y transmisión | catálogo con ese filtro |
+| `/shop`, `/vehiculos/3735`, `/reserva_lista`, `/agendamiento-amelia-interno` | catálogo o contacto |
+| `/Flota-Empresarial` y variantes | `/flota_de_empresas` |
+
+Todas son redirecciones permanentes: Google traspasa el posicionamiento de la
+URL vieja a la nueva en vez de perderlo.
+
+### Un vehículo despublicado ya no es un 404
+
+La Peugeot 3008 se pasó a borrador, pero su URL estaba indexada. En vez de
+devolver un 404 seco, lleva al catálogo. Lo mismo pasará con cualquier auto que
+se despublique: la visita no se pierde, se redirige a ver otros vehículos.

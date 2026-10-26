@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Galeria, type FotoGaleria } from "@/components/vehiculos/Galeria";
 import { TarjetaVehiculo } from "@/components/vehiculos/TarjetaVehiculo";
 import { BotonPrincipal, BotonSecundario } from "@/components/ui/Botones";
@@ -24,6 +24,7 @@ import {
 } from "@/lib/vehiculos";
 import { etiquetaOpcion } from "@/lib/equipamiento";
 import { sitio, whatsappUrl } from "@/lib/site";
+import { crearClienteAdmin } from "@/lib/supabase/admin";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -79,7 +80,18 @@ export default async function FichaVehiculo({ params }: Props) {
   const { slug } = await params;
   const vehiculo = await obtenerVehiculoPorSlug(slug);
 
-  if (!vehiculo) notFound();
+  if (!vehiculo) {
+    // Si el vehículo existe pero está despublicado, su URL puede estar
+    // indexada: mejor llevar al catálogo que devolver un 404 seco.
+    const { data } = await crearClienteAdmin()
+      .from("vehiculos")
+      .select("id")
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (data) redirect("/vehiculos-en-venta");
+    notFound();
+  }
 
   const [opciones, relacionados, vecinos] = await Promise.all([
     listarOpcionesEquipamiento(),

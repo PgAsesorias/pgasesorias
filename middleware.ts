@@ -8,6 +8,24 @@ import { NextResponse, type NextRequest } from "next/server";
  * del layout de /admin: el middleware es la primera barrera, no la única.
  */
 export async function middleware(request: NextRequest) {
+  /*
+   * URLs antiguas de WordPress con el vehículo en la query:
+   *   /?vehiculo=toyota-4runner-2018-santiago
+   * Se redirigen a la ruta limpia. Va en el middleware y no en los redirects
+   * de next.config porque ahí la query original se arrastra al destino, y la
+   * URL definitiva no debe llevarla.
+   */
+  if (request.nextUrl.pathname === "/") {
+    const slug = request.nextUrl.searchParams.get("vehiculo");
+    if (slug && /^[a-z0-9-]+$/.test(slug)) {
+      const destino = new URL(`/vehiculos-en-venta/${slug}`, request.url);
+      return NextResponse.redirect(destino, 301);
+    }
+    if (request.nextUrl.searchParams.get("post_type") === "vehiculo") {
+      return NextResponse.redirect(new URL("/vehiculos-en-venta", request.url), 301);
+    }
+  }
+
   let respuesta = NextResponse.next({ request });
 
   const supabase = createServerClient(
