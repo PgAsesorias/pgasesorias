@@ -101,9 +101,10 @@ create table if not exists public.reservas (
 create index if not exists reservas_inicio_idx on public.reservas (inicio);
 
 -- Disponibilidad pública sin exponer datos personales
-create or replace view public.reservas_ocupadas
-with (security_invoker = false) as
-  select inicio, fin from public.reservas where estado in ('pendiente','confirmada');
+-- La vista reservas_ocupadas se reemplazó por la función
+-- public.bloques_ocupados() en supabase/ajustes.sql (evita SECURITY DEFINER
+-- en una vista, que Supabase marca como crítico).
+
 
 grant select on public.reservas_ocupadas to anon, authenticated;
 
